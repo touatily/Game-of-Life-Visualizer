@@ -20,6 +20,7 @@ class window(tk.Tk):
 
         self.colorGrid = "blue"
         self.colorCells = "black"
+        self.shapeCells = "square"
 
         # window configuration
         ## solve incompatibility problem of wm_state("zoomed") with Linux
@@ -46,6 +47,7 @@ class window(tk.Tk):
         filemenu.add_command(label="Open", command=self.loadConfig, accelerator="Ctrl+O")
         filemenu.add_command(label="Save", command=self.saveConfig, accelerator="Ctrl+S")
         filemenu.add_command(label="Save as PDF", command=self.savePDF, accelerator="Ctrl+P")
+        filemenu.add_command(label="Save as PS", command=self.savePS, accelerator="Ctrl+T")
         filemenu.add_command(label="Save as JPG", accelerator="Ctrl+J")
         filemenu.add_separator()
         filemenu.add_command(label="Exit", command=self.exit, accelerator="Ctrl+Q")
@@ -59,11 +61,17 @@ class window(tk.Tk):
         optionmenu = tk.Menu(menubar, tearoff=0)
         optionmenu.add_command(label="Grid Color", command = self.chooseColorGrid, accelerator="F1")
         optionmenu.add_command(label="Cells Color", command = self.chooseColorCells, accelerator="F2")
+
+        shapemenu = tk.Menu(menubar, tearoff=0)
+        shapemenu.add_command(label="Square", command = lambda : self.selectShape(1), accelerator="Alt+S")
+        shapemenu.add_command(label="Triangle", command = lambda : self.selectShape(2), accelerator="Alt+T")
+        shapemenu.add_command(label="Circle", command = lambda : self.selectShape(3), accelerator="Alt+C")
+        optionmenu.add_cascade(label="Shape of Cells", menu=shapemenu)
+
         menubar.add_cascade(label="Options", menu=optionmenu)
         
         simmenu = tk.Menu(menubar, tearoff=0)
         simmenu.add_command(label="Start/Stop Simulation", command = self.start, accelerator="Enter")
-        #simmenu.add_command(label="Stop Simulation" + " "*20 + "Enter", command = self.stop)
         simmenu.add_command(label="Next generation", command = self.step, accelerator="N/n/Right")
         menubar.add_cascade(label="Simulation", menu=simmenu)
 
@@ -125,12 +133,56 @@ class window(tk.Tk):
         self.bind('<Up>', self.increaseSpeed)
         self.bind('<Down>', self.decreaseSpeed)
         self.bind('<Right>', self.step)
-        #self.bind("<Tab>", lambda e: print("ddd"))
+
+        self.bind('<Alt-s>', lambda e: self.selectShape(1, e))
+        self.bind('<Alt-t>', lambda e: self.selectShape(2, e))
+        self.bind('<Alt-c>', lambda e: self.selectShape(3, e))
 
         ## label showing mouse coordinate
         self.tv = tk.StringVar()
         self.coordinate = tk.Label(self.plan2, textvariable=self.tv, anchor='e')
         self.coordinate.pack(side="bottom", fill="x", pady=25)
+
+
+    def selectShape(self, shape=1, e=None):
+        if shape==1: # Square
+            if self.shapeCells == "square":
+                 return
+            self.shapeCells = "square"
+            self.canvas.delete("cells")
+            for i in range(len(self.gridContent)):
+                for j in range(len(self.gridContent[0])):
+                    if self.gridContent[i][j] == 1:
+                        tagg = str(j*10) + "-" + str(i*10)
+                        self.canvas.create_rectangle(j*10+1, i*10+1, (j+1)*10-1, (i+1)*10-1,
+                                outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
+
+        elif shape==2: # Triangle
+            if self.shapeCells == "triangle":
+                 return
+            self.shapeCells = "triangle"
+            self.canvas.delete("cells")
+            for i in range(len(self.gridContent)):
+                for j in range(len(self.gridContent[0])):
+                    if self.gridContent[i][j] == 1:
+                        tagg = str(j*10) + "-" + str(i*10)
+                        self.canvas.create_polygon(j*10+1+4, i*10+1, (j+1)*10-1, (i+1)*10-1, j*10+1, (i+1)*10-1, 
+                                outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
+
+
+        elif shape==3: # Circle
+            if self.shapeCells == "circle":
+                 return
+            self.shapeCells = "circle"
+
+            self.canvas.delete("cells")
+            for i in range(len(self.gridContent)):
+                for j in range(len(self.gridContent[0])):
+                    if self.gridContent[i][j] == 1:
+                        tagg = str(j*10) + "-" + str(i*10)
+                        self.canvas.create_oval(j*10+1, i*10+1, (j+1)*10-1, (i+1)*10-1,
+                                outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
+
 
     def increaseSpeed(self, e=None):
         if self.speed.get() < 100:
@@ -206,6 +258,8 @@ class window(tk.Tk):
         except Exception:
             print("error")
         
+    def savePS(self, e=None):
+        pass
 
     def saveJPG(self, e=None):
         """
@@ -243,7 +297,15 @@ class window(tk.Tk):
             for j in range(len(self.gridContent[0])):
                 if self.gridContent[i][j] == 1:
                     tagg = str(j*10) + "-" + str(i*10)
-                    self.canvas.create_rectangle(j*10+1, i*10+1, (j+1)*10-1, (i+1)*10-1,
+
+                    if self.shapeCells == "square":
+                        self.canvas.create_rectangle(j*10+1, i*10+1, (j+1)*10-1, (i+1)*10-1,
+                                outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
+                    elif self.shapeCells == "circle":
+                        self.canvas.create_oval(j*10+1, i*10+1, (j+1)*10-1, (i+1)*10-1,
+                                outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
+                    elif self.shapeCells == "triangle":
+                        self.canvas.create_polygon(j*10+1+4, i*10+1, (j+1)*10-1, (i+1)*10-1, j*10+1, (i+1)*10-1, 
                                 outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
             
 
@@ -254,8 +316,18 @@ class window(tk.Tk):
             xx = x+10
             yy = y+10
             tagg = str(x) + "-" + str(y)
-            self.canvas.create_rectangle(x+1, y+1, xx-1, yy-1, fill=self.colorCells,
-                                         outline=self.colorCells, tag="cells " + tagg)
+
+            if self.shapeCells == "square":
+                self.canvas.create_rectangle(x+1, y+1, xx-1, yy-1,
+                                outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
+            elif self.shapeCells == "circle":
+                self.canvas.create_oval(x+1, y+1, xx-1, yy-1,
+                                outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
+            elif self.shapeCells == "triangle":
+                self.canvas.create_polygon(x+1+4, y+1, xx-1, yy-1, xx-9, yy-1,
+                                outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
+
+
             self.mouseMotion(e)
             self.gridContent[y//10][x//10] = 1
 
@@ -299,9 +371,16 @@ class window(tk.Tk):
             for j in range(len(self.gridContent[0])):
                 if self.gridContent[i][j] == 1:
                     tagg = str(j*10) + "-" + str(i*10)
-                    self.canvas.create_rectangle(j*10+1, i*10+1, (j+1)*10-1, (i+1)*10-1,
-                                outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
 
+                    if self.shapeCells == "square":
+                        self.canvas.create_rectangle(j*10+1, i*10+1, (j+1)*10-1, (i+1)*10-1,
+                                outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
+                    elif self.shapeCells == "circle":
+                        self.canvas.create_oval(j*10+1, i*10+1, (j+1)*10-1, (i+1)*10-1,
+                                outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
+                    elif self.shapeCells == "triangle":
+                        self.canvas.create_polygon(j*10+1+4, i*10+1, (j+1)*10-1, (i+1)*10-1, j*10+1, (i+1)*10-1, 
+                                outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
 
     def exit(self, e=None):
         self.stop()
