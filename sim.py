@@ -24,10 +24,3 @@ def nextGen(currGen : list):
             else:
                 if nb==3: ng[i][j] = 1
     return ng
-
-
-
-
-
-
-    
