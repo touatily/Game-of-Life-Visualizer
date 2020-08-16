@@ -12,60 +12,62 @@ import os
 
 class window(tk.Tk):
 
-    
     def __init__(self):
         super().__init__()
 
         self.inited = False
         self.simStarted = False
-        
+
         self.colorGrid = "blue"
         self.colorCells = "black"
 
         # window configuration
-        pad=3
+        ## solve incompatibility problem of wm_state("zoomed") with Linux
+        try:
+            self.wm_state("zoomed")
+        except:
+            pad=3
+            self.geometry("{0}x{1}+0+0".format( self.winfo_screenwidth()-pad,
+                                                self.winfo_screenheight()-pad))
         self.title("Conway's game for life")
-        self.geometry("{0}x{1}+0+0".format(
-            self.winfo_screenwidth()-pad, self.winfo_screenheight()-pad))
-        #self.wm_state('zoomed')
-        #self.state("zoomed")
+
         w, h = self.winfo_screenwidth(), self.winfo_screenheight()
         self.geometry("%dx%d+0+0" % (w, h))
         self.resizable(False, False)
-        
+
         self.plan = tk.Frame(self, bg="grey")
         self.plan.pack(fill="both", padx=20, pady=20, expand=True)
 
         self.plan.grid_columnconfigure(0, weight=1)
-        
+
         # menu configuration
         menubar = tk.Menu(self)
         filemenu = tk.Menu(menubar, tearoff=0)
-        filemenu.add_command(label="Open" + " "*28 + "Ctrl+O", command=self.loadConfig)
-        filemenu.add_command(label="Save" + " "*30 + "Ctrl+S", command=self.saveConfig)
-        filemenu.add_command(label="Save as PDF" + " "*17 + "Ctrl+P", command=self.savePDF)
-        #filemenu.add_command(label="Save as JPG" + " "*18 + "Ctrl+J", command=self.saveJPG)
+        filemenu.add_command(label="Open", command=self.loadConfig, accelerator="Ctrl+O")
+        filemenu.add_command(label="Save", command=self.saveConfig, accelerator="Ctrl+S")
+        filemenu.add_command(label="Save as PDF", command=self.savePDF, accelerator="Ctrl+P")
+        filemenu.add_command(label="Save as JPG", accelerator="Ctrl+J")
         filemenu.add_separator()
-        filemenu.add_command(label="Exit" + " "*32 + "Ctrl+Q", command=self.exit)
+        filemenu.add_command(label="Exit", command=self.exit, accelerator="Ctrl+Q")
         menubar.add_cascade(label="File", menu=filemenu)
 
         editmenu = tk.Menu(menubar, tearoff=0)
-        editmenu.add_command(label="Clean Grid" + " "*28 + "Ctrl+C", command = self.cleanGrid)
-        editmenu.add_command(label="Fill Grid" + " "*33 + "Ctrl+F", command = self.fillGrid)
+        editmenu.add_command(label="Clean Grid", command = self.cleanGrid, accelerator="Ctrl+C")
+        editmenu.add_command(label="Fill Grid", command = self.fillGrid, accelerator="Ctrl+F")
         menubar.add_cascade(label="Edit", menu=editmenu)
 
         optionmenu = tk.Menu(menubar, tearoff=0)
-        optionmenu.add_command(label="Grid Color" + " "*28 + "F1", command = self.chooseColorGrid)
-        optionmenu.add_command(label="Cells Color" + " "*27 + "F2", command = self.chooseColorCells)
+        optionmenu.add_command(label="Grid Color", command = self.chooseColorGrid, accelerator="F1")
+        optionmenu.add_command(label="Cells Color", command = self.chooseColorCells, accelerator="F2")
         menubar.add_cascade(label="Options", menu=optionmenu)
         
         simmenu = tk.Menu(menubar, tearoff=0)
-        simmenu.add_command(label="Start/Stop Simulation" + " "*11 + "Enter", command = self.start)
+        simmenu.add_command(label="Start/Stop Simulation", command = self.start, accelerator="Enter")
         #simmenu.add_command(label="Stop Simulation" + " "*20 + "Enter", command = self.stop)
-        simmenu.add_command(label="Next generation" + " "*21 + "N or Right", command = self.step)
+        simmenu.add_command(label="Next generation", command = self.step, accelerator="N/n/Right")
         menubar.add_cascade(label="Simulation", menu=simmenu)
 
-        menubar.add_command(label="About", command=self.about)
+        menubar.add_command(label="About", command=self.about, accelerator="Ctrl+A")
         self.config(menu=menubar)
 
         # canvas configuration
@@ -215,17 +217,21 @@ class window(tk.Tk):
         """
 
     def saveConfig(self, e=None):
-        fname = filedialog.asksaveasfilename()
-        if fname =="":
+        fname = filedialog.asksaveasfilename(filetypes=[('CSV files', '.csv')], defaultextension=".csv",
+                                             title="Save configuration as CSV file")
+        if fname =="" or not fname:
             return
+
+        print(fname)
         with open(fname, "w", newline="") as f:
             writer = csv.writer(f, delimiter=",")
             writer.writerows(self.gridContent)
 
 
     def loadConfig(self, e=None):
-        fname = filedialog.askopenfilename()
-        if fname=="":
+        fname = filedialog.askopenfilename(filetypes=[('CSV files', '.csv')], defaultextension=".csv",
+                                             title="Save configuration as CSV file")
+        if fname=="" or not fname:
             return
         with open(fname, "r") as f:
             reader = csv.reader(f, delimiter=",")
