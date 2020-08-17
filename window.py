@@ -8,6 +8,7 @@ from tkinter import messagebox as mb
 from tkinter.colorchooser import askcolor
 import subprocess
 import os
+import platform as pm
 #from PIL import Image, ImageDraw
 
 class window(tk.Tk):
@@ -174,15 +175,28 @@ class window(tk.Tk):
             self.rmenu = tk.Menu(None, tearoff=0, takefocus=0)
             self.rmenu.add_command(label="Fill Zone", command=lambda : self.fillZone(e))
             self.rmenu.add_command(label="Clean Zone", command=lambda : self.cleanZone(e))
-            self.rmenu.add_command(label="Copy", command=lambda :self.canvas.delete("select"))
-            self.rmenu.add_command(label="Cut", command=lambda :self.canvas.delete("select"))
+
+            self.rmenu.add_separator()
+            self.rmenu.add_command(label="Cancel", command=lambda : self.escape(e), accelerator="Escape")
+            #self.rmenu.add_command(label="Copy", command=lambda :self.canvas.delete("select"))
+            #self.rmenu.add_command(label="Cut", command=lambda :self.canvas.delete("select"))
+
+            if pm.system() == "Linux":
+                self.rmenu.bind("<Escape>", self.escape)
             try:
-                self.rmenu.tk_popup(e.x_root+10, e.y_root+10)
+                self.rmenu.tk_popup(e.x_root+2, e.y_root+2)
             finally:
                 self.rmenu.grab_release()
-                self.canvas.delete("select")
-                self.rmenu = None
+                if pm.system() == "Windows":
+                    self.canvas.delete("select")
+                    self.rmenu = None
 
+
+    def escape(self, e):
+        self.canvas.delete("select")
+        self.x=None
+        self.y=None
+        self.rmenu = None
 
     def cleanZone(self, e):
         x = max(0, e.x - e.x%10)
@@ -201,6 +215,8 @@ class window(tk.Tk):
                 tagg = str(x) + "-" + str(y)
                 self.canvas.delete(tagg)
                 self.gridContent[j][i] = 0
+        self.escape(e)
+
 
     def fillZone(self, e):
         x = max(0, e.x - e.x%10)
@@ -229,7 +245,7 @@ class window(tk.Tk):
                                 outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
 
                 self.gridContent[j][i] = 1
-
+        self.escape(e)
 
 
 
@@ -495,9 +511,9 @@ class window(tk.Tk):
         self.destroy()
 
     def task(self):
-        self.step()
         with th.Lock():
             if self.simStarted:
+                self.step()
                 self.after(100 - self.speed.get() + 1, self.task)
         
 
