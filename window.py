@@ -175,6 +175,10 @@ class window(tk.Tk):
             self.rmenu = tk.Menu(None, tearoff=0, takefocus=0)
             self.rmenu.add_command(label="Fill Zone", command=lambda : self.fillZone(e), accelerator="F")
             self.rmenu.add_command(label="Clean Zone", command=lambda : self.cleanZone(e), accelerator="C")
+            self.rmenu.add_separator()
+
+            self.rmenu.add_command(label="Save Zone as PDF", command=lambda : self.saveZonePDF(e), accelerator="P")
+            self.rmenu.add_command(label="Save Zone as PS", command=lambda : self.saveZonePS(e), accelerator="T")
 
             self.rmenu.add_separator()
             self.rmenu.add_command(label="Cancel", command=lambda : self.escape(e), accelerator="Escape")
@@ -194,6 +198,55 @@ class window(tk.Tk):
                     self.canvas.delete("select")
                     self.rmenu = None
 
+    def saveZonePDF(self, e):
+        x, y = e.x-e.x%10, e.y-e.y%10
+        x = min(max(0, x), self.canvas.winfo_width())
+        y = min(max(0, y), self.canvas.winfo_height())
+
+        w, h= abs(self.x-x), abs(self.y-y)
+        x, y = min(self.x, x), min(self.y, y)
+        self.escape(e)
+        self.canvas.update()
+
+        ftypes = [('PDF files', '.pdf')]
+        fname = filedialog.asksaveasfilename(filetypes=ftypes, defaultextension=".pdf",
+                                             title="Save as PDF file", initialdir = "./PDFs/")
+        if fname == "":
+            return
+        try:
+            self.canvas.postscript(file="tmp.ps", colormode='color', rotate=True, pageheight=600, pagewidth=700,
+                               x=x, y=y, width=w, height=h)
+            process = subprocess.Popen(["ps2pdf", "tmp.ps", fname])
+            process.wait()
+            os.remove("tmp.ps")
+            mb.showinfo('Action completed', 'The PDF file has been generated successfully!')
+        except Exception:
+            print("error")
+
+
+
+
+
+    def saveZonePS(self, e):
+        x, y = e.x-e.x%10, e.y-e.y%10
+        x = min(max(0, x), self.canvas.winfo_width())
+        y = min(max(0, y), self.canvas.winfo_height())
+
+        w, h= abs(self.x-x), abs(self.y-y)
+        x, y = min(self.x, x), min(self.y, y)
+        self.escape(e)
+        self.canvas.update()
+        ftypes = [('PS files', '.ps')]
+        fname = filedialog.asksaveasfilename(filetypes=ftypes, defaultextension=".ps", title="Save as PS file",
+                                initialdir = "./PSs/")
+        if fname == "":
+            return
+        self.canvas.postscript(file=fname, colormode='color', rotate=True, pageheight=600, pagewidth=700,
+                               x=x, y=y, width=w, height=h)
+        mb.showinfo('Action completed', 'The PS file has been generated successfully!')
+
+        
+
 
     def keyPressedAfterSelect(self, event, e):
         if event.char == "F" or event.char == "f":
@@ -201,6 +254,12 @@ class window(tk.Tk):
             self.event_generate("<Escape>", when="tail")
         elif event.char == "C" or event.char == "c":
             self.cleanZone(e)
+            self.event_generate("<Escape>", when="tail")
+        elif event.char == "P" or event.char == "p":
+            self.saveZonePDF(e)
+            self.event_generate("<Escape>", when="tail")
+        elif event.char == "T" or event.char == "t":
+            self.saveZonePS(e)
             self.event_generate("<Escape>", when="tail")
 
     def escape(self, e):
