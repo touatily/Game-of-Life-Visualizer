@@ -183,6 +183,7 @@ class window(tk.Tk):
 
             if pm.system() == "Linux":
                 self.rmenu.bind("<Escape>", self.escape)
+                self.bind("<Escape>", self.escape)
             try:
                 self.rmenu.tk_popup(e.x_root+2, e.y_root+2)
             finally:
