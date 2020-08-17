@@ -30,7 +30,7 @@ class window(tk.Tk):
             pad=3
             self.geometry("{0}x{1}+0+0".format( self.winfo_screenwidth()-pad,
                                                 self.winfo_screenheight()-pad))
-        self.title("Conway's game for life")
+        self.title("Conway's game for life visualizer")
 
         w, h = self.winfo_screenwidth(), self.winfo_screenheight()
         self.geometry("%dx%d+0+0" % (w, h))
@@ -124,6 +124,7 @@ class window(tk.Tk):
         self.bind('<Control-o>', self.loadConfig)
         self.bind('<Control-q>', self.exit)
         self.bind('<Control-p>', self.savePDF)
+        self.bind('<Control-t>', self.savePS)
 
         self.bind('<Key>', self.keyPressed)
         self.bind('<Return>', self.start)
@@ -243,7 +244,7 @@ class window(tk.Tk):
         self.canvas.update()
         ftypes = [('PDF files', '.pdf')]
         fname = filedialog.asksaveasfilename(filetypes=ftypes, defaultextension=".pdf",
-                                             title="Save as PDF file")
+                                             title="Save as PDF file", initialdir = "./PDFs/")
 
         if fname == "":
             return
@@ -253,13 +254,20 @@ class window(tk.Tk):
                                    pageheight=600, pagewidth=700)
             process = subprocess.Popen(["ps2pdf", "tmp.ps", fname])
             process.wait()
-            #os.remove("tmp.ps")
-            mb.showinfo('OK', 'The PDF file has been generated successfully!')
+            os.remove("tmp.ps")
+            mb.showinfo('Action completed', 'The PDF file has been generated successfully!')
         except Exception:
             print("error")
         
     def savePS(self, e=None):
-        pass
+        self.canvas.update()
+        ftypes = [('PS files', '.ps')]
+        fname = filedialog.asksaveasfilename(filetypes=ftypes, defaultextension=".ps", title="Save as PS file",
+                                initialdir = "./PSs/")
+        if fname == "":
+            return
+        self.canvas.postscript(file=fname, colormode='color', rotate=True, pageheight=600, pagewidth=700)
+        mb.showinfo('Action completed', 'The PS file has been generated successfully!')
 
     def saveJPG(self, e=None):
         """
@@ -272,7 +280,7 @@ class window(tk.Tk):
 
     def saveConfig(self, e=None):
         fname = filedialog.asksaveasfilename(filetypes=[('CSV files', '.csv')], defaultextension=".csv",
-                                             title="Save configuration as CSV file")
+                                             title="Save configuration as CSV file", initialdir = "./Saved config/")
         if fname =="" or not fname:
             return
 
@@ -280,11 +288,11 @@ class window(tk.Tk):
         with open(fname, "w", newline="") as f:
             writer = csv.writer(f, delimiter=",")
             writer.writerows(self.gridContent)
-
+        mb.showinfo('Action completed', 'The configuration has been successfully saved!')
 
     def loadConfig(self, e=None):
         fname = filedialog.askopenfilename(filetypes=[('CSV files', '.csv')], defaultextension=".csv",
-                                             title="Save configuration as CSV file")
+                                             title="Save configuration as CSV file", initialdir = "./Saved config/")
         if fname=="" or not fname:
             return
         with open(fname, "r") as f:
