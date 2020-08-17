@@ -173,13 +173,15 @@ class window(tk.Tk):
     def release_2(self, e):
         if self.x !=e.x and self.y != e.y and not self.rmenu:
             self.rmenu = tk.Menu(None, tearoff=0, takefocus=0)
-            self.rmenu.add_command(label="Fill Zone", command=lambda : self.fillZone(e))
-            self.rmenu.add_command(label="Clean Zone", command=lambda : self.cleanZone(e))
+            self.rmenu.add_command(label="Fill Zone", command=lambda : self.fillZone(e), accelerator="F")
+            self.rmenu.add_command(label="Clean Zone", command=lambda : self.cleanZone(e), accelerator="C")
 
             self.rmenu.add_separator()
             self.rmenu.add_command(label="Cancel", command=lambda : self.escape(e), accelerator="Escape")
             #self.rmenu.add_command(label="Copy", command=lambda :self.canvas.delete("select"))
             #self.rmenu.add_command(label="Cut", command=lambda :self.canvas.delete("select"))
+
+            self.rmenu.bind("<Key>", lambda event: self.keyPressedAfterSelect(event, e))
 
             if pm.system() == "Linux":
                 self.rmenu.bind("<Escape>", self.escape)
@@ -192,6 +194,14 @@ class window(tk.Tk):
                     self.canvas.delete("select")
                     self.rmenu = None
 
+
+    def keyPressedAfterSelect(self, event, e):
+        if event.char == "F" or event.char == "f":
+            self.fillZone(e)
+            self.event_generate("<Escape>", when="tail")
+        elif event.char == "C" or event.char == "c":
+            self.cleanZone(e)
+            self.event_generate("<Escape>", when="tail")
 
     def escape(self, e):
         self.canvas.delete("select")
