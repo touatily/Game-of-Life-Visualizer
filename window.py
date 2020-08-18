@@ -216,15 +216,20 @@ class window(tk.Tk):
         try:
             self.canvas.postscript(file="tmp.ps", colormode='color', rotate=True, pageheight=600, pagewidth=700,
                                x=x, y=y, width=w, height=h)
-            process = subprocess.Popen(["ps2pdf", "tmp.ps", fname])
+
+
+            if pm.system()=="Windows":
+                startupinfo = subprocess.STARTUPINFO()
+                startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+                process = subprocess.Popen(["ps2pdf", "tmp.ps", fname], startupinfo=startupinfo)
+            else:
+                process = subprocess.Popen(["ps2pdf", "tmp.ps", fname])
             process.wait()
             os.remove("tmp.ps")
+            
             mb.showinfo('Action completed', 'The PDF file has been generated successfully!')
         except Exception:
-            print("error")
-
-
-
+            mb.showerror("Error", "Somehting went wrong!")
 
 
     def saveZonePS(self, e):
@@ -438,12 +443,21 @@ class window(tk.Tk):
         try:
             self.canvas.postscript(file="tmp.ps", colormode='color', rotate=True,
                                    pageheight=600, pagewidth=700)
-            process = subprocess.Popen(["ps2pdf", "tmp.ps", fname])
+
+
+            if pm.system()=="Windows":
+                startupinfo = subprocess.STARTUPINFO()
+                startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+                process = subprocess.Popen(["ps2pdf", "tmp.ps", fname], startupinfo=startupinfo)
+            else:
+                process = subprocess.Popen(["ps2pdf", "tmp.ps", fname])
             process.wait()
             os.remove("tmp.ps")
+            
             mb.showinfo('Action completed', 'The PDF file has been generated successfully!')
         except Exception:
-            print("error")
+            mb.showerror("Error", "Somehting went wrong!")
+
         
     def savePS(self, e=None):
         self.canvas.update()
