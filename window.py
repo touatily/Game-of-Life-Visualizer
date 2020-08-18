@@ -1,3 +1,11 @@
+####################################################
+#                                                  #
+#   Projet:             Conway's Game of Life      #
+#   Author:             M. Lyes Touati             #
+#   Last Update:        18/08/2020                 #
+#                                                  #
+####################################################
+
 import tkinter as tk
 from tkinter import filedialog
 import csv
@@ -22,6 +30,7 @@ class window(tk.Tk):
         self.colorGrid = "blue"
         self.colorCells = "black"
         self.shapeCells = "square"
+        self.clipboard = None
 
         # window configuration
         ## solve incompatibility problem of wm_state("zoomed") with Linux
@@ -73,7 +82,7 @@ class window(tk.Tk):
         
         simmenu = tk.Menu(menubar, tearoff=0)
         simmenu.add_command(label="Start/Stop Simulation", command = self.start, accelerator="Enter")
-        simmenu.add_command(label="Next generation", command = self.step, accelerator="N/n/Right")
+        simmenu.add_command(label="Next generation", command = self.step, accelerator="Right Arrow")
         menubar.add_cascade(label="Simulation", menu=simmenu)
 
         menubar.add_command(label="About", command=self.about, accelerator="Ctrl+A")
@@ -87,9 +96,9 @@ class window(tk.Tk):
 
         
         self.canvas.bind('<Button-1>', self.click1_canvas)
-        self.canvas.bind('<Button-3>', self.click2_canvas)
+        self.canvas.bind('<Control-1>', self.click2_canvas)
         self.canvas.bind('<B1-Motion>', self.click1_canvas)
-        self.canvas.bind('<B3-Motion>', self.click2_canvas)
+        self.canvas.bind('<Control-B1-Motion>', self.click2_canvas)
         self.canvas.bind('<Motion>', self.mouseMotion)
         
         
@@ -147,9 +156,9 @@ class window(tk.Tk):
 
 
         # button 2 (Mouse Wheel) events
-        self.canvas.bind("<Button-2>", self.click_2)
-        self.canvas.bind("<B2-Motion>", self.motion_2)
-        self.canvas.bind("<ButtonRelease-2>", self.release_2)
+        self.canvas.bind("<Button-3>", self.click_2)
+        self.canvas.bind("<B3-Motion>", self.motion_2)
+        self.canvas.bind("<ButtonRelease-3>", self.release_2)
 
         self.x = None
         self.y = None
@@ -177,6 +186,11 @@ class window(tk.Tk):
             self.rmenu.add_command(label="Clean Zone", command=lambda : self.cleanZone(e), accelerator="C")
             self.rmenu.add_separator()
 
+            self.rmenu.add_command(label="Copy Zone", command=lambda : self.copyZone(e), accelerator="Shift-C")
+            self.rmenu.add_command(label="Paste", command=lambda : self.pasteZone(e), accelerator="Shift-V")
+
+            self.rmenu.add_separator()
+
             self.rmenu.add_command(label="Save Zone as PDF", command=lambda : self.saveZonePDF(e), accelerator="P")
             self.rmenu.add_command(label="Save Zone as PS", command=lambda : self.saveZonePS(e), accelerator="T")
 
@@ -197,6 +211,60 @@ class window(tk.Tk):
                 if pm.system() == "Windows":
                     self.canvas.delete("select")
                     self.rmenu = None
+
+
+    def copyZone(self, e):
+        x, y = e.x-e.x%10, e.y-e.y%10
+        x = min(max(0, x), self.canvas.winfo_width())
+        y = min(max(0, y), self.canvas.winfo_height())
+
+        w, h = abs(self.x-x), abs(self.y-y)
+        x, y = min(self.x, x), min(self.y, y)
+        x = x // 10
+        y = y // 10
+
+        self.clipboard = [[self.gridContent[j+y][i+x] for j in range(h//10)] for i in range(w//10)]
+        print(self.clipboard)
+        print()
+        self.escape(e)
+
+    def pasteZone(self, e):
+        if self.clipboard == None: 
+            self.escape(e)
+            return
+        x, y = e.x-e.x%10, e.y-e.y%10
+        x = min(max(0, x), self.canvas.winfo_width())
+        y = min(max(0, y), self.canvas.winfo_height())
+
+        xxx = x // 10
+        yyy = y // 10
+        for i in range(len(self.clipboard)):
+            for j in range(len(self.clipboard[0])):
+                self.gridContent[yyy+j][xxx+i] = self.clipboard[i][j]
+
+                x = i*10 + xxx*10
+                xx = x+10
+                
+                y = j*10 + yyy*10
+                yy = y+10
+                tagg = str(x) + "-" + str(y)
+                print(x, y)
+                
+
+                if self.clipboard[i][j]==1:
+                    if self.shapeCells == "square":
+                        self.canvas.create_rectangle(x+1, y+1, xx-1, yy-1, outline=self.colorCells,
+												 fill=self.colorCells, tag="cells " + tagg)
+                    elif self.shapeCells == "circle":
+                        self.canvas.create_oval(x+1, y+1, xx-1, yy-1,
+									outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
+                    elif self.shapeCells == "triangle":
+                        self.canvas.create_polygon(x+5, y+1, xx-1, yy-1, x+1, yy-1, 
+									outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
+                else:
+                    self.canvas.delete(tagg)
+									
+        self.escape(e)
 
     def saveZonePDF(self, e):
         x, y = e.x-e.x%10, e.y-e.y%10
