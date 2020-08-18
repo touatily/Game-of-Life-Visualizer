@@ -71,6 +71,7 @@ class window(tk.Tk):
         optionmenu = tk.Menu(menubar, tearoff=0)
         optionmenu.add_command(label="Grid Color", command = self.chooseColorGrid, accelerator="F1")
         optionmenu.add_command(label="Cells Color", command = self.chooseColorCells, accelerator="F2")
+        optionmenu.add_command(label="Background Color", command = self.chooseColorBG, accelerator="F3")
 
         shapemenu = tk.Menu(menubar, tearoff=0)
         shapemenu.add_command(label="Square", command = lambda : self.selectShape(1), accelerator="Alt+S")
@@ -140,6 +141,7 @@ class window(tk.Tk):
         self.bind('<Return>', self.start)
         self.bind('<F1>', self.chooseColorGrid)
         self.bind('<F2>', self.chooseColorCells)
+        self.bind('<F3>', self.chooseColorBG)
 
         self.bind('<Up>', self.increaseSpeed)
         self.bind('<Down>', self.decreaseSpeed)
@@ -687,6 +689,11 @@ class window(tk.Tk):
             l = self.canvas.find_withtag("cells")
             for e in l:
                 self.canvas.itemconfig(e, fill=res[1], outline=res[1]) # change color
+
+    def chooseColorBG(self, e=None):
+        res = askcolor(color=self.canvas['bg'], title = "Cells Color Chooser")
+        if res[1] != None:
+            self.canvas.configure(bg=res[1])
 
 p = window()
 p.bind("<Visibility>", p.init)
