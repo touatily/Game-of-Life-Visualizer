@@ -226,8 +226,8 @@ class window(tk.Tk):
         y = y // 10
 
         self.clipboard = [[self.gridContent[j+y][i+x] for j in range(h//10)] for i in range(w//10)]
-        print(self.clipboard)
-        print()
+        #print(self.clipboard)
+        #print()
         self.escape(e)
 
     def pasteZone(self, e):
@@ -250,7 +250,7 @@ class window(tk.Tk):
                 y = j*10 + yyy*10
                 yy = y+10
                 tagg = str(x) + "-" + str(y)
-                print(x, y)
+                #print(x, y)
                 
 
                 if self.clipboard[i][j]==1:
@@ -554,7 +554,7 @@ class window(tk.Tk):
         if fname =="" or not fname:
             return
 
-        print(fname)
+        #print(fname)
         with open(fname, "w", newline="") as f:
             writer = csv.writer(f, delimiter=",")
             writer.writerows(self.gridContent)
