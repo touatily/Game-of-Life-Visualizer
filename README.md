@@ -2,7 +2,7 @@
 
 ## Description
 
-Conway game of life Visualizer is a Python application for simulating Conway's Game of Life that allows you to perform a cellular automata simulation on saved or personnalized configurations.
+Conway game of life Visualizer is a Python application for simulating [Conway's Game of Life][wikipedia game of life] Conway's Game of Life that allows you to perform a cellular automata simulation on saved or personnalized configurations.
 
 ## Requirements
 
@@ -18,7 +18,7 @@ It works on Linux and Windows Operating systems
 - You can Save current configuration as PDF/PS files
 - You can customize your simulation by changing the shape of the cells: square, circle, triangle
 - You can customize your simulation by changing the color of the cells, the grid, and the background
-- You can select a zone do one of the actions:
+- You can select a zone and do one of the actions:
     - Fill the zone with cells
     - Remove all the cells in the zone
     - Copy then paste the content of the zone
@@ -32,3 +32,4 @@ It works on Linux and Windows Operating systems
 
 
 
+[wikipedia game of life]: https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life

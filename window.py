@@ -202,6 +202,8 @@ class window(tk.Tk):
             #self.rmenu.add_command(label="Cut", command=lambda :self.canvas.delete("select"))
 
             self.rmenu.bind("<Key>", lambda event: self.keyPressedAfterSelect(event, e))
+            self.rmenu.bind("<Shift-KeyPress-V>", lambda event: self.pasteZone(e))
+            self.rmenu.bind("<Shift-KeyPress-C>", lambda event: self.copyZone(e))
 
             if pm.system() == "Linux":
                 self.rmenu.bind("<Escape>", self.escape)
@@ -229,6 +231,8 @@ class window(tk.Tk):
         #print(self.clipboard)
         #print()
         self.escape(e)
+        self.event_generate("<Escape>", when="tail")
+
 
     def pasteZone(self, e):
         if self.clipboard == None: 
@@ -267,6 +271,7 @@ class window(tk.Tk):
                     self.canvas.delete(tagg)
 									
         self.escape(e)
+        self.event_generate("<Escape>", when="tail")
 
     def saveZonePDF(self, e):
         x, y = e.x-e.x%10, e.y-e.y%10
