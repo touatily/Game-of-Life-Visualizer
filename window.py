@@ -573,12 +573,14 @@ class window(tk.Tk):
         with open(fname, "r") as f:
             reader = csv.reader(f, delimiter=",")
             l = list(reader)
-            self.gridContent = [[int(ee) for ee in e] for e in l]
+            fileContent = [[int(ee) for ee in e] for e in l]
+        self.gridContent =  [[0 for j in range(self.nbCols)] for i in range(self.nbRows)]
 
         self.canvas.delete("cells")
-        for i in range(len(self.gridContent)):
-            for j in range(len(self.gridContent[0])):
-                if self.gridContent[i][j] == 1:
+        for i in range(min(len(self.gridContent), len(fileContent))):
+            for j in range(min(len(self.gridContent[0]), len(fileContent[0]))):
+                if fileContent[i][j] == 1:
+                    self.gridContent[i][j] = 1
                     tagg = str(j*10) + "-" + str(i*10)
 
                     if self.shapeCells == "square":
