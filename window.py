@@ -381,20 +381,21 @@ class window(tk.Tk):
             x = i*10
             xx = x+10
             for j in range(y1//10, y2//10):
-                y = j*10
-                yy = y+10               
-                tagg = str(x) + "-" + str(y)
-                if self.shapeCells == "square":
-                    self.canvas.create_rectangle(x+1, y+1, xx-1, yy-1, outline=self.colorCells,
-                                             fill=self.colorCells, tag="cells " + tagg)
-                elif self.shapeCells == "circle":
-                    self.canvas.create_oval(x+1, y+1, xx-1, yy-1,
-                                outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
-                elif self.shapeCells == "triangle":
-                    self.canvas.create_polygon(x+5, y+1, xx-1, yy-1, x+1, yy-1, 
-                                outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
+                if self.gridContent[j][i] == 0:
+                    self.gridContent[j][i] = 1
+                    y = j*10
+                    yy = y+10               
+                    tagg = str(x) + "-" + str(y)
+                    if self.shapeCells == "square":
+                        self.canvas.create_rectangle(x+1, y+1, xx-1, yy-1, outline=self.colorCells,
+                                                 fill=self.colorCells, tag="cells " + tagg)
+                    elif self.shapeCells == "circle":
+                        self.canvas.create_oval(x+1, y+1, xx-1, yy-1,
+                                    outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
+                    elif self.shapeCells == "triangle":
+                        self.canvas.create_polygon(x+5, y+1, xx-1, yy-1, x+1, yy-1, 
+                                    outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
 
-                self.gridContent[j][i] = 1
         self.escape(e)
 
 
@@ -460,8 +461,7 @@ class window(tk.Tk):
             self.nbRows = height//10
             self.nbCols = width//10
 
-            self.gridContent = [[0 for j in range(self.nbCols)]
-                                 for i in range(self.nbRows)]
+            self.gridContent = [[0 for j in range(self.nbCols)] for i in range(self.nbRows)]
 
 
     def mouseMotion(self, event):
@@ -473,8 +473,7 @@ class window(tk.Tk):
         
     def cleanGrid(self, e=None):
         self.canvas.delete("cells")
-        self.gridContent = [[0 for j in range(self.nbCols)]
-                                 for i in range(self.nbRows)]
+        self.gridContent = [[0 for j in range(self.nbCols)] for i in range(self.nbRows)]
 
     def fillGrid(self, e=None):
         height = self.canvas.winfo_height()
@@ -483,26 +482,22 @@ class window(tk.Tk):
             x = i*10
             xx = x+10
             for j in range(0, height//10):
-                y = j*10
-                yy = y+10
-                tagg = str(x) + "-" + str(y)
+                if self.gridContent[j][i] == 0:
+                    self.gridContent[j][i] = 1
+                    y = j*10
+                    yy = y+10
+                    tagg = str(x) + "-" + str(y)
 
 
-                if self.shapeCells == "square":
-                    self.canvas.create_rectangle(x+1, y+1, xx-1, yy-1, outline=self.colorCells,
-                                             fill=self.colorCells, tag="cells " + tagg)
-                elif self.shapeCells == "circle":
-                    self.canvas.create_oval(x+1, y+1, xx-1, yy-1,
-                                outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
-                elif self.shapeCells == "triangle":
-                    self.canvas.create_polygon(x+5, y+1, xx-1, yy-1, x+1, yy-1, 
-                                outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
-
-
-
-
-        self.gridContent = [[1 for j in range(self.nbCols)]
-                                 for i in range(self.nbRows)]
+                    if self.shapeCells == "square":
+                        self.canvas.create_rectangle(x+1, y+1, xx-1, yy-1, outline=self.colorCells,
+                                                 fill=self.colorCells, tag="cells " + tagg)
+                    elif self.shapeCells == "circle":
+                        self.canvas.create_oval(x+1, y+1, xx-1, yy-1,
+                                    outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
+                    elif self.shapeCells == "triangle":
+                        self.canvas.create_polygon(x+5, y+1, xx-1, yy-1, x+1, yy-1, 
+                                    outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
 
 
 
@@ -598,23 +593,24 @@ class window(tk.Tk):
         x = e.x - e.x%10
         y = e.y - e.y%10
         if (x//10 < self.nbCols and x//10 >= 0 and y//10 < self.nbRows and y//10 >=0):
-            xx = x+10
-            yy = y+10
-            tagg = str(x) + "-" + str(y)
+            if self.gridContent[y//10][x//10] == 0:
+                self.gridContent[y//10][x//10] = 1
+                xx = x+10
+                yy = y+10
+                tagg = str(x) + "-" + str(y)
 
-            if self.shapeCells == "square":
-                self.canvas.create_rectangle(x+1, y+1, xx-1, yy-1,
-                                outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
-            elif self.shapeCells == "circle":
-                self.canvas.create_oval(x+1, y+1, xx-1, yy-1,
-                                outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
-            elif self.shapeCells == "triangle":
-                self.canvas.create_polygon(x+1+4, y+1, xx-1, yy-1, xx-9, yy-1,
-                                outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
-
+                if self.shapeCells == "square":
+                    self.canvas.create_rectangle(x+1, y+1, xx-1, yy-1,
+                                    outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
+                elif self.shapeCells == "circle":
+                    self.canvas.create_oval(x+1, y+1, xx-1, yy-1,
+                                    outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
+                elif self.shapeCells == "triangle":
+                    self.canvas.create_polygon(x+1+4, y+1, xx-1, yy-1, xx-9, yy-1,
+                                    outline=self.colorCells, fill=self.colorCells, tag="cells " + tagg)
 
             self.mouseMotion(e)
-            self.gridContent[y//10][x//10] = 1
+            
 
     def click2_canvas(self, e):
         x = e.x - e.x%10
