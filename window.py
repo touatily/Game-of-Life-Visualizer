@@ -18,6 +18,7 @@ import subprocess
 import os
 import platform as pm
 from PIL import Image, ImageDraw
+import tooltip as ttp
 
 class window(tk.Tk):
 
@@ -114,6 +115,8 @@ class window(tk.Tk):
         self.startStop = tk.Button(self.plan2, text="Start", command=self.start)
         self.startStop.pack(ipadx=15, padx=10, ipady=5, pady=5)
 
+        self.ttpStartStop = ttp.ToolTip(self.startStop, "Start/Stop Simulation")
+
         self.btnStep = tk.Button(self.plan2, text="Step", command=self.step)
         self.btnStep.pack(ipadx=15, padx=10, ipady=5, pady=5)
 
@@ -124,10 +127,11 @@ class window(tk.Tk):
         self.save.pack(ipadx=15, padx=10, ipady=5, pady=5)
 
 
-        self.lspeed = tk.Label(self.plan2, text="Speed")
-        self.lspeed.pack(ipadx=15, padx=10)
+        #self.lspeed = tk.Label(self.plan2, text="Speed")
+        #self.lspeed.pack(ipadx=15, padx=10)
         
-        self.speed = tk.Scale(self.plan2, from_=100, to=1)
+        self.speed = tk.Scale(self.plan2, from_=1, to=100, orient=tk.HORIZONTAL,
+                width=10, label="Speed", length=50)
         self.speed.pack(ipadx=15, padx=10)
 
         self.bind('<Control-s>', self.saveConfig)
