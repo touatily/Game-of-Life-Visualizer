@@ -17,7 +17,7 @@ from tkinter.colorchooser import askcolor
 import subprocess
 import os
 import platform as pm
-#from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw
 
 class window(tk.Tk):
 
@@ -58,7 +58,7 @@ class window(tk.Tk):
         filemenu.add_command(label="Save", command=self.saveConfig, accelerator="Ctrl+S")
         filemenu.add_command(label="Save as PDF", command=self.savePDF, accelerator="Ctrl+P")
         filemenu.add_command(label="Save as PS", command=self.savePS, accelerator="Ctrl+T")
-        filemenu.add_command(label="Save as JPG", accelerator="Ctrl+J")
+        filemenu.add_command(label="Save as JPG", command=self.saveJPG, accelerator="Ctrl+J")
         filemenu.add_separator()
         filemenu.add_command(label="Exit", command=self.exit, accelerator="Ctrl+Q")
         menubar.add_cascade(label="File", menu=filemenu)
@@ -136,6 +136,7 @@ class window(tk.Tk):
         self.bind('<Control-q>', self.exit)
         self.bind('<Control-p>', self.savePDF)
         self.bind('<Control-t>', self.savePS)
+        self.bind("<Control-j>", self.saveJPG)
 
         self.bind('<Key>', self.keyPressed)
         self.bind('<Return>', self.start)
@@ -540,13 +541,37 @@ class window(tk.Tk):
         mb.showinfo('Action completed', 'The PS file has been generated successfully!')
 
     def saveJPG(self, e=None):
-        """
-        image1 = Image.new("RGB", (width, height), white)
+        ftypes = [('JPEG files', '.jpg')]
+        fname = filedialog.asksaveasfilename(filetypes=ftypes, defaultextension=".jpg", title="Save as JPEG image",
+                                initialdir = "./JPEGs/")
+        if fname == "":
+            return
+        width = self.canvas.winfo_width()
+        height = self.canvas.winfo_height()
+        image1 = Image.new("RGB", (width, height), self.canvas["bg"])
         draw = ImageDraw.Draw(image1)
-        draw.line([0, 100, 3, 190], green)
-        filename = "my_drawing.jpg"
-        image1.save(filename)
-        """
+
+        ## Draw grid lines
+        for i in range(1, height//10):
+            draw.line([0, i*10, width, i*10], self.colorGrid)
+        for i in range(1, width//10):
+            draw.line([i*10, 0, i*10, height], self.colorGrid)
+
+        for i in range(len(self.gridContent)):
+            for j in range(len(self.gridContent[0])):
+                if self.gridContent[i][j] == 1:
+                    if self.shapeCells == "square":
+                        draw.rectangle([j*10+1, i*10+1, (j+1)*10-1, (i+1)*10-1],
+                            fill=self.colorCells, outline=self.colorCells)
+                    elif self.shapeCells == "circle":
+                        draw.ellipse([j*10+1, i*10+1, (j+1)*10-1, (i+1)*10-1],
+                            fill=self.colorCells, outline=self.colorCells)
+                    elif self.shapeCells == "triangle":
+                        draw.polygon([j*10+1+4, i*10+1, (j+1)*10-1, (i+1)*10-1, j*10+1, (i+1)*10-1],
+                            outline=self.colorCells, fill=self.colorCells)
+
+        image1.save(fname)
+        mb.showinfo('Action completed', 'The JPEG file has been generated successfully!')
 
     def saveConfig(self, e=None):
         fname = filedialog.asksaveasfilename(filetypes=[('CSV files', '.csv')], defaultextension=".csv",
