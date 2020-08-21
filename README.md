@@ -28,6 +28,10 @@ It works on Linux and Windows Operating systems
 
 ## List of shortcut
 
+- ** Simulation **
+    - `<Enter>`: Start/Stop the simulation
+    - `<n>`, `<N>`, `<Right>`: next step 
+
 ## Pictures
 
 
