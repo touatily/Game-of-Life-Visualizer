@@ -7,6 +7,7 @@ Conway game of life Visualizer is a Python application for simulating [Conway's 
 ## Requirements
 
 - Python version 3 (latest one is prefered)
+- *ps2pdf* (required only to create PDF files) 
 
 It works on Linux and Windows Operating systems
 
@@ -26,7 +27,7 @@ It works on Linux and Windows Operating systems
 - You can run the simulation step by step
 - You can change the speed of the simulation while it's running
 
-## List of shortcut
+## List of shortcuts
 
 - **Simulation**
     - `<Enter>`: Start/Stop the simulation
