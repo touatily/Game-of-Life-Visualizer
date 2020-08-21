@@ -28,9 +28,27 @@ It works on Linux and Windows Operating systems
 
 ## List of shortcut
 
-- ** Simulation **
+- **Simulation**
     - `<Enter>`: Start/Stop the simulation
-    - `<n>`, `<N>`, `<Right>`: next step 
+    - `<n>`, `<N>`, or `<Right>`: next step
+
+- **Configuration of the grid**
+    - `<F1>` Choose the color of the grid
+    - `<F2>` Choose the color of the cells 
+    - `<F3>` Choose the color of the background
+    - `<Alt>+<C>` Change the shape of the cells to circle
+    - `<Alt>+<S>` Change the shape of the cells to square
+    - `<Alt>+<T>` Change the shape of the cells to triangle
+
+- **Save and/or load configuration**
+    - `<Ctrl>+<O>` Load a configuration
+    - `<Ctrl>+<S>` Save the current configuration in a csv file
+    - `<Ctrl>+<P>` Save the configuration as a PDF file
+    - `<Ctrl>+<T>` Save the configuration as a PS file
+    - `<Ctrl>+<J>` Save the configuration as a JPEG file
+    - `<Ctrl>+<G>` Save the configuration as a GIF file 
+
+- **Edit**
 
 ## Pictures
 
