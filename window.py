@@ -251,8 +251,8 @@ class window(tk.Tk):
 
         xxx = x // 10
         yyy = y // 10
-        for i in range(len(self.clipboard)):
-            for j in range(len(self.clipboard[0])):
+        for i in range(min(len(self.clipboard), len(self.gridContent[0])-xxx)):
+            for j in range(min(len(self.clipboard[0]), len(self.gridContent)-yyy)):
                 self.gridContent[yyy+j][xxx+i] = self.clipboard[i][j]
 
                 x = i*10 + xxx*10
