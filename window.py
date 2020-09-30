@@ -742,7 +742,7 @@ class window(tk.Tk):
         
 
     def about(self, e=None):
-        mb.showinfo('No', 'Quit has been cancelled')
+        mb.showinfo('Game of life visulizer', 'Application developped by Lyes Touati')
 
     def chooseColorGrid(self, e=None):
         res = askcolor(color=self.colorGrid, title = "Grid Color Chooser")
