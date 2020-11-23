@@ -4,6 +4,8 @@
 
 Conway game of life Visualizer is a Python application for simulating [Conway's Game of Life][wikipedia game of life] Conway's Game of Life that allows you to perform a cellular automata simulation on saved or personnalized configurations.
 
+Presentation video: [YouTube video](https://www.youtube.com/watch?v=at3M9MfzzFg)
+
 ## Requirements
 
 - Python version 3 (latest one is prefered)
