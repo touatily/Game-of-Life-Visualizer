@@ -2,14 +2,15 @@
 
 ## Description
 
-Conway game of life Visualizer is a Python application for simulating [Conway's Game of Life][wikipedia game of life] Conway's Game of Life that allows you to perform a cellular automata simulation on saved or personnalized configurations.
+Conway game of life Visualizer is a Python application for simulating [Conway's Game of Life][wikipedia game of life] Conway's Game of Life that allows you to perform a cellular automata simulation on saved or personalized configurations.
 
-Presentation video: [YouTube video](https://www.youtube.com/watch?v=at3M9MfzzFg)
+Presentation video (short): [YouTube video](https://www.youtube.com/watch?v=at3M9MfzzFg)
+Presentation video (long): [YouTube video](https://www.youtube.com/watch?v=ewE061Sv1T4)
 
 ## Requirements
 
-- Python version 3 (latest one is prefered)
-- *ps2pdf* (required only to create PDF files) 
+- Python version 3 (latest one is preferred)
+- *ps2pdf* (required only to create PDF files)
 
 It works on Linux and Windows Operating systems
 
@@ -33,11 +34,11 @@ It works on Linux and Windows Operating systems
 
 - **Simulation**
     - `<Enter>`: Start/Stop the simulation
-    - `<n>`, `<N>`, or `<Right>`: next step
+    - `<n>`, `<N>`, or `<Right Arrow>`: next step
 
 - **Configuration of the grid**
     - `<F1>` Choose the color of the grid
-    - `<F2>` Choose the color of the cells 
+    - `<F2>` Choose the color of the cells
     - `<F3>` Choose the color of the background
     - `<Alt>+<C>` Change the shape of the cells to circle
     - `<Alt>+<S>` Change the shape of the cells to square
@@ -49,12 +50,28 @@ It works on Linux and Windows Operating systems
     - `<Ctrl>+<P>` Save the configuration as a PDF file
     - `<Ctrl>+<T>` Save the configuration as a PS file
     - `<Ctrl>+<J>` Save the configuration as a JPEG file
-    - `<Ctrl>+<G>` Save the configuration as a GIF file 
+    - `<Ctrl>+<G>` Save the configuration as a GIF file
 
 - **Edit**
+    - `<Ctrl>+<C>` Clean grid (remove all cells in the grid)
+    - `<Ctrl>+<F>` Fill all the grid
+    - `<Button-Left>` Add cells
+    - `<Ctrl>+<Button-Left>` Remove cells
+    - `<Button-Right>` Context menu - Select a zone (see `Miscellaneous` section)
+
+## Miscellaneous
+- You can control the speed of the simulation.
+- Using Right Button, you can select a zone of the grid in order to:
+    - Fill it
+    - Clean it
+    - Copy/Paste it
+    - Save it in a PDF/PS file
 
 ## Pictures
 
+![Capture 1](https://raw.githubusercontent.com/touatily/Game-of-Life-Visualizer/master/pictures/Capture.PNG)
+![Capture 2](https://raw.githubusercontent.com/touatily/Game-of-Life-Visualizer/master/pictures/Capture1.PNG)
+![Capture 3](https://raw.githubusercontent.com/touatily/Game-of-Life-Visualizer/master/pictures/Capture2.PNG)
 
 
-[wikipedia game of life]: https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
+[Wikipedia game of life]: https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
