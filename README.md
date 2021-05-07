@@ -1,4 +1,4 @@
-# Game-of-Life
+# Game-of-Life Visualizer
 
 ## Description
 
@@ -11,6 +11,7 @@ Conway game of life Visualizer is a Python application for simulating [Conway's 
 
 - Python version 3 (latest one is preferred)
 - *ps2pdf* (required only to create PDF files)
+- tkinter
 
 It works on Linux and Windows Operating systems
 
